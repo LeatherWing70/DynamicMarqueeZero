@@ -28,17 +28,17 @@ ssh-copy-id pi@retropie.local
 
 ssh pi@retropie.local  <-- You will be asked to save the figerprint of the RetroPie, type yes then you can just type exit to end ssh.
 ```
-if you want a default image on boot use 'sudo nano .bashrc' and add this to the last line:  (rquires autologin to be set in raspi-config)
-```
-sudo ~/t.sh retropie.png
-```
 
 Install and setup the marqueepi side of the scripts
 ```
 sudo apt-get -y install fbi
 mkdir ~/cache
-whatever the github command ends up being to copy t.sh to ~/
-whatever the command is to copy retropie.png to ~/cache
+```
+download or copy marquee/t.sh to ~/
+download or copy copy retropie.png to ~/cache<br>
+if you want a default image on boot use 'sudo nano .bashrc' and add this to the last line:  (rquires autologin to be set in raspi-config)
+```
+sudo ~/t.sh retropie.png
 ```
 
 ### On the RetroPie via console or ssh
@@ -53,9 +53,7 @@ ssh pi@marquee.local  <-- You will be asked to save the figerprint of the RetroP
 
 ## Two ways to run Dynamic Marquee Zero
 ### 1)  Via Attract mode plugin
-```
-copy dynamicmarquee.nut to ~/.attract/plugins
-```
+download or copy attract/dynamicmarquee.nut to ~/.attract/plugins<br>
 Edit dynamicmarquee.nut.  There is a long switch/case section in the function updateTick.  Each case should match your configured emmulators in ~/.attract/emulators<br>
 Configured emmulators should all have a "marquee" artwork folder defined.  This is the path DynamicMarqueeZero will use to send images to the marqueepi<br>
 Run attractmode and enable dynamicmarquee in the plugins section of settings.<br>
@@ -63,8 +61,6 @@ A default 'marquee.png' (jpg, ect) can be placed in each layout folder you use t
 <B>Enjoy</B>
 
 ### 2) Via runcommand launching and exiting games (only supports .png files currently)
-```
-copy runcommand-onstart.sh and runcommand-onend.sh to /opt/retropie/confgis/all
-```
+download or copy runcommand-onstart.sh and runcommand-onend.sh to /opt/retropie/confgis/all<br>
 These scripts assume there is a 'marquee' directory in the roms directory<br>
 A default 'marquee.png' can be placed in the roms/[emulator]/marquee directory
