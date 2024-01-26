@@ -2,7 +2,7 @@
 Dynamic Marquee for Retropi using a Pi Zero (2) to drive the display instead of using the second HDMI on a 4/5 and making it possible for Pi 3 owners to run a dynamic marquee cheeply.  If video marquees become avalable this could easily be modfied to run them while adding 0 CPU load to RetroPie and its emulators
 
 ## This ain't great
-I've hammered these scripts out of neccesity, because I have a Pi 5, and currently there are no other options to run a dynamic marquee on RetroPie and Wayland.  In my parlance: It's like useing a sledgehammer to drive a finishing nail.
+I've hammered these scripts out of neccesity, because I have a Pi 5, and currently there are no other options to run a dynamic marquee on RetroPie and Bookworm.  In my parlance: It's like useing a sledgehammer to drive a finishing nail.
 
 ## Installation and todo for setup script if this gets any attention
 ### On the pi Zero (marquee or marqueepi from here on)
