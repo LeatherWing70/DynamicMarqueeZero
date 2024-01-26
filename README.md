@@ -56,7 +56,7 @@ ssh pi@marquee.local  <-- You will be asked to save the figerprint of the RetroP
 ```
 copy dynamicmarquee.nut to ~/.attract/plugins
 ```
-Edit dynamicmarquee.nut.  There is a long switch/case section.  each case should match your configured emmulators in ~/.attract/emulators<br>
+Edit dynamicmarquee.nut.  There is a long switch/case section in the function updateTick.  Each case should match your configured emmulators in ~/.attract/emulators<br>
 Configured emmulators should all have a "marquee" artwork folder defined.  This is the path DynamicMarqueeZero will use to send images to the marqueepi<br>
 Run attractmode and enable dynamicmarquee in the plugins section of settings.<br>
 A default 'marquee.png' (jpg, ect) can be placed in each layout folder you use to display your games<br>
