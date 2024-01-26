@@ -1,7 +1,7 @@
 local has_moved = false;
 local load_timer_max = 20;
 local load_timer = load_timer_max;
-local marqDir = './';
+local marqDir = "";
 
 fe.add_transition_callback( "dynamicmarquee" );
 function dynamicmarquee( ttype, var, transition_time )
