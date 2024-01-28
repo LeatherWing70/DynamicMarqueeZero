@@ -35,7 +35,7 @@ sudo apt-get -y install fbi
 mkdir ~/cache
 ```
 download or copy marquee/t.sh to ~/<br>
-download or copy copy retropie.png to ~/cache<br>
+download or copy retropie.png to ~/cache<br>
 if you want a default image on boot use 'sudo nano .bashrc' and add this to the last line:  (rquires autologin to be set in raspi-config)
 ```
 sudo ~/t.sh retropie.png
