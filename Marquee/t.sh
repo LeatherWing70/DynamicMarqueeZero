@@ -32,7 +32,7 @@ then
     #I had to do this with a config file to make passing of filenames with spaces possible
     #scp runs sftp in the background so had the same problem
     echo lcd /home/marquee/cache>/dev/shm/sftp.commands
-    echo get \'$2\' \'$1\'>>/dev/shm/sftp.commands
+    echo get \"$2\" \"$1\">>/dev/shm/sftp.commands
     echo exit >>/dev/shm/sftp.commands
     # pull the remote file with config
     sftp -b /dev/shm/sftp.commands pi@retrocade.local
