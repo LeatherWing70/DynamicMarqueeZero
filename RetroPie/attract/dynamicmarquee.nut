@@ -221,7 +221,7 @@ function updateTick( ttime )
 	
 	// if a file actually exists
 	if (fe.path_test(marqueepath ,PathTest.IsFile)) {
-		fe.plugin_command_bg( "ssh", "marquee@marquee.local \"/home/marquee/t.sh \'"+marqDir+"/"+fe.game_info(Info.Name)+ext+"\' \'"+fe.get_art("marquee")+"\' "+marqDir+"\"");
+		fe.plugin_command_bg( "ssh", "marquee@marquee.local \"/home/marquee/t.sh \\\""+marqDir+"/"+fe.game_info(Info.Name)+ext+"\\\" \\\""+fe.get_art("marquee")+"\\\" "+marqDir+"\"");
 	}
 	// else do default
 	else
