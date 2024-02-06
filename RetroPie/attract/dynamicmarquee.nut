@@ -209,9 +209,8 @@ function updateTick( ttime )
 				break;
 			case "TRS-80 Color Computer":
 			case "RetroPie":
-				break;
 			default:
-				marqDir="";
+				marqDir="misc";
 				break;			
 		}
 	
