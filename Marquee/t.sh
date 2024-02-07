@@ -11,10 +11,6 @@ DIR="$(dirname "${1}")" ; FILE="$(basename "${1}")"
 process=$(pgrep -f 'fbi')
 
 # if the emulator was given in command line args, and a dir dosent exist, make one
-
-# if $3 == "store or missing"
-# write $2 to file
-# if become elseif
 if [ -n $3 ] && [ ! -d /home/marquee/cache/$3 ]
 then
     mkdir /home/marquee/cache/$3
