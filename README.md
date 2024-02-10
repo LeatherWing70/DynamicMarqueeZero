@@ -51,7 +51,7 @@ ssh-copy-id pi@marquee.local
 ssh pi@marquee.local  <-- You will be asked to save the figerprint of the RetroPie, type yes then you can just type exit to end ssh.
 ```
 
-## Two ways to run Dynamic Marquee Zero
+## Three ways to run Dynamic Marquee Zero
 ### 1)  Via Attract mode plugin
 download or copy attract/dynamicmarquee.nut to ~/.attract/plugins<br>
 Edit dynamicmarquee.nut.  There is a long switch/case section in the function updateTick.  Each case should match your configured emmulators in ~/.attract/emulators<br>
@@ -60,7 +60,12 @@ Run attractmode and enable dynamicmarquee in the plugins section of settings.<br
 A default 'marquee.png' (jpg, ect) can be placed in each layout folder you use to display your games<br>
 <B>Enjoy</B>
 
-### 2) Via runcommand launching and exiting games (only supports .png files currently)
+### 2) Vis emulationstation event scripts
+download or copy emulationstation/scripts to /opt/retropie/configs/all/emulationstation/scripts
+These scripts assume there is a 'marquee' directory in the roms directory roms/[emulator]/marquee<br>
+System marquee images are stored in roms/[emulator]/marquee/marquee.png
+
+### 3) Via runcommand launching and exiting games (only supports .png files currently)
 download or copy runcommand-onstart.sh and runcommand-onend.sh to /opt/retropie/confgis/all<br>
 These scripts assume there is a 'marquee' directory in the roms directory<br>
 A default 'marquee.png' can be placed in the roms/[emulator]/marquee directory
