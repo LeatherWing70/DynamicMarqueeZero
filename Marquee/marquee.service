@@ -1,0 +1,15 @@
+[Unit]
+Description=Marquee Display Daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/marquee/marquee_daemon.py
+WorkingDirectory=/home/marquee
+User=marquee
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
