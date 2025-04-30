@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # DynamicMarqueeZero Install Script (v2)
 # Installs necessary packages, sets up cache, configures display, SSH keys, and systemd service.
 
@@ -17,9 +16,10 @@ read -p "Enter your remote host (e.g., pi@retropie.local): " remote_host
 
 # 2. Pick locale
 echo "[2/11] [Locale Setup] Configure system locale."
-echo "Available UTF-8 Locales:"
-available_locales=$(locale -a | grep -i utf)
-select chosen_locale in $available_locales; do
+echo "Select your preferred system locale:"
+locales=("en_US.UTF-8" "en_GB.UTF-8" "fr_FR.UTF-8" "de_DE.UTF-8" "es_ES.UTF-8" "it_IT.UTF-8" "pt_BR.UTF-8" "ja_JP.U>
+
+select chosen_locale in "${locales[@]}"; do
   if [[ -n "$chosen_locale" ]]; then
     echo "You chose: $chosen_locale"
     break
@@ -28,9 +28,21 @@ select chosen_locale in $available_locales; do
   fi
 done
 
+# Uncomment the chosen locale in /etc/locale.gen if needed
+if grep -E -q "^[[:space:]]*#?[[:space:]]*$chosen_locale[[:space:]]+UTF-8" /etc/locale.gen; then
+  if grep -E -q "^[[:space:]]*$chosen_locale[[:space:]]+UTF-8" /etc/locale.gen; then
+    echo "Locale already active: $chosen_locale"
+  else
+    echo "Uncommenting $chosen_locale..."
+    sudo sed -i "s/^[[:space:]]*#*[[:space:]]*\($chosen_locale[[:space:]]\+UTF-8\)/\1/" /etc/locale.gen
+  fi
+else
+  echo "Appending $chosen_locale to /etc/locale.gen"
+  echo "$chosen_locale UTF-8" | sudo tee -a /etc/locale.gen
+fi
+
 # 3. Set locale
 echo "[3/11] [Locale Setup] Generate system locale."
-echo "$chosen_locale UTF-8" | sudo tee -a /etc/locale.gen >/dev/null
 sudo locale-gen "$chosen_locale"
 sudo update-locale LANG=$chosen_locale
 
@@ -40,6 +52,7 @@ if [ ! -f ~/.ssh/id_rsa ]; then
   ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 fi
 ssh-copy-id "$remote_host"
+
 # 5. Update /boot/config.txt
 boot_config="/boot/config.txt"
 gpu_mem_line="gpu_mem=128"
