@@ -4,7 +4,7 @@ import os, pygame, time, math, subprocess, random, shlex
 pipe_path = "/tmp/display.pipe"
 cache_path = "/home/marquee/cache"
 remote_host = "pi@retropie.local"
-remote_path = "/home/marquee/cache"
+remote_path = cache_path
 current_image_path = "/home/marquee/cache/retropie.png"
 sleep = 0.01
 
