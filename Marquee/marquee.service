@@ -11,8 +11,7 @@ RestartSec=5
 StandardOutput=journal
 StandardError=journal
 
-Environment=SDL_VIDEODRIVER=fbcon
-Environment=SDL_FBDEV=/dev/fb0
+Environment=SDL_VIDEODRIVER=KMSDRM
 Environment=PYGAME_HIDE_SUPPORT_PROMPT=1
 Environment=XDG_RUNTIME_DIR=/run/user/1000
 
