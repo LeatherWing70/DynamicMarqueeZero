@@ -6,18 +6,22 @@
 set -e
 
 echo "=== DynamicMarqueeZero Setup Script ==="
-
+if [ -n "$SUDO_USER" ]; then
+  user_home=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+else
+  user_home="$HOME"
+fi
 
 # 1. Prompt for display resolution
-echo "[1/11] Gather information."
+echo "[1/12] Gather information."
 read -p "Enter your screen width (e.g., 1920): " screen_width
 read -p "Enter your screen height (e.g., 360): " screen_height
 read -p "Enter your remote host (e.g., pi@retropie.local): " remote_host
 
 # 2. Pick locale
-echo "[2/11] [Locale Setup] Configure system locale."
+echo "[2/12] [Locale Setup] Configure system locale."
 echo "Select your preferred system locale:"
-locales=("en_US.UTF-8" "en_GB.UTF-8" "fr_FR.UTF-8" "de_DE.UTF-8" "es_ES.UTF-8" "it_IT.UTF-8" "pt_BR.UTF-8" "ja_JP.U>
+locales=("en_US.UTF-8" "en_GB.UTF-8" "fr_FR.UTF-8" "de_DE.UTF-8" "es_ES.UTF-8" "it_IT.UTF-8" "pt_BR.UTF-8" "ja_JP.UTF-8")
 
 select chosen_locale in "${locales[@]}"; do
   if [[ -n "$chosen_locale" ]]; then
@@ -42,68 +46,132 @@ else
 fi
 
 # 3. Set locale
-echo "[3/11] [Locale Setup] Generate system locale."
-sudo locale-gen "$chosen_locale"
+echo "[3/12] [Locale Setup] Generate system locale...  $chosen_locale UTF-8"
+# sudo locale-gen "$chosen_locale"
 sudo update-locale LANG=$chosen_locale
 
 # 4. SSH key setup
-echo "[4/11] Setting up SSH access..."
+# may require /etc/hosts setup.
+echo "[4/12] Setting up SSH access."
 if [ ! -f ~/.ssh/id_rsa ]; then
   ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 fi
 ssh-copy-id "$remote_host"
 
 # 5. Update /boot/config.txt
-boot_config="/boot/config.txt"
-gpu_mem_line="gpu_mem=128"
-display_block="hdmi_drive=2
-hdmi_group=2
-hdmi_mode=87
-hdmi_cvt=${screen_width} ${screen_height} 60"
+boot_config="/boot/firmware/config.txt"
 
-echo "[5/11] Configuring $boot_config for display..."
+# Clean and default values
+screen_width=$(echo "${screen_width:-1920}" | tr -d '\r\n')
+screen_height=$(echo "${screen_height:-360}" | tr -d '\r\n')
+full_cvt="$screen_width $screen_height 60"
 
-# Only append lines if they don't already exist
-for line in "$gpu_mem_line" $display_block; do
-  if ! grep -qF "$line" "$boot_config"; then
-    echo "$line" | sudo tee -a "$boot_config" >/dev/null
+echo "[5/12] Configuring $boot_config for display..."
+
+# Lines to manage under [all]
+declare -A config_map=(
+  ["gpu_mem"]="128"
+  ["hdmi_drive"]="2"
+  ["hdmi_group"]="2"
+  ["hdmi_mode"]="87"
+  ["hdmi_cvt"]="$full_cvt"
+  ["hdmi_force_hotplug"]="1"
+)
+
+# If no [all] section, add it to the end
+if ! grep -q "^\[all\]" "$boot_config"; then
+  echo -e "\n[all]" | sudo tee -a "$boot_config" > /dev/null
+fi
+
+# Loop over each setting and add or update
+for key in "${!config_map[@]}"; do
+  value="${config_map[$key]}"
+  if grep -A10 "^\[all\]" "$boot_config" | grep -q "^$key="; then
+    # Replace existing key=value under [all]
+    sudo sed -i "/^\[all\]/,/^\[/ s|^$key=.*|$key=$value|" "$boot_config"
+  else
+    # Append under [all]
+    sudo sed -i "/^\[all\]/a $key=$value" "$boot_config"
   fi
 done
 
 # 6. Install Python and Pygame
-echo "[6/11] Updating package list and installing required software..."
+echo "[6/12] Updating package list and installing required software..."
 sudo apt update
+sudo apt upgrade
+echo "Installing Python3"
 sudo apt install -y python3 python3-pip
-pip3 install pygame
-
+echo "seting up pygame"
+#pip3 install pygame
+sudo apt install -y python3-pygame
 # 7. Create cache directory
-echo "[7/11] Creating ~/cache directory..."
-mkdir -p ~/cache
+echo "[7/12] Creating ~/cache directory..."
+mkdir -p "$user_home/cache"
 
 # 8. Download files from GitHub
-echo "[8/11] Downloading Marquee files..."
-GITHUB_REPO="https://raw.githubusercontent.com/LeatherWing70/DynamicMarqueeZero/tree/main/Marquee"
-curl -fsSL "$GITHUB_REPO/marquee_daemon.py" -o ~/marquee_daemon.py
-curl -fsSL "$GITHUB_REPO/marquee.service" -o ~/marquee.service
-curl -fsSL "$GITHUB_REPO/retropie.png" -o ~/cache/retropie.png
+echo "[8/12] Downloading Marquee files..."
+GITHUB_REPO="https://raw.githubusercontent.com/LeatherWing70/DynamicMarqueeZero/main/Marquee"
+curl -fsSL "$GITHUB_REPO/marquee_daemon.py" -o "$user_home/marquee_daemon.py"
+curl -fsSL "$GITHUB_REPO/marquee.service" -o "$user_home/marquee.service"
+curl -fsSL "$GITHUB_REPO/retropie.png" -o "$user_home/cache/retropie.png"
+
+
+real_user="${SUDO_USER:-$USER}"
 
 # 9. Inject remote_host into daemon
-echo "[9/11] Configureing daemon..."
-sed -i "s/^remote_host = .*/remote_host = \"$remote_host\"/" ~/marquee_daemon.py
+echo "[9/12] Configureing daemon..."
+sed -i "s/^remote_host = .*/remote_host = \"$remote_host\"/" "$user_home/marquee_daemon.py"
+sed -i "s|cache_path = .*|cache_path = \"$user_home/cache\"|" "$user_home/marquee_daemon.py"
+sed -i "s|current_image_path = .*|current_image_path = \"$user_home/cache/retropie.png\"|" "$user_home/marquee_daemon.py"
+sed -i "s|user = .*|user = \"$real_user\"|" "$user_home/marquee_daemon.py"
+
 
 # 10. Adjust service file
-echo "[10/11] Configureing daemon service..."
-current_user=$(whoami)
-user_home=$(eval echo "~$current_user")
-sed -i "s|ExecStart=.*|ExecStart=/usr/bin/python3 $user_home/marquee_daemon.py|" ~/marquee.service
-sed -i "s|User=.*|User=$current_user|" ~/marquee.service
+echo "[10/12] Configureing daemon service..."
+
+#current_user=$(whoami)
+user_id=$(id -u "$real_user")
+
+# user_home=$(eval echo "~$current_user")
+sed -i "s|ExecStart=.*|ExecStart=/usr/bin/python3 $user_home/marquee_daemon.py|" "$user_home/marquee.service"
+sed -i "s|WorkingDirectory=.*|WorkingDirectory=$user_home|" "$user_home/marquee.service"
+sed -i "s|User=.*|User=$real_user|" "$user_home/marquee.service"
+sed -i "s|Environment=XDG_RUNTIME_DIR=.*|Environment=XDG_RUNTIME_DIR=/run/user/$user_id|" "$user_home/marquee.service"
 
 # 11. Install systemd service
-echo "[11/11] Installing daemon service..."
-sudo mv ~/dynamic_marquee.service /etc/systemd/system/dynamic_marquee.service
+echo "[11/12] Installing daemon service..."
+sudo mv "$user_home/marquee.service" /etc/systemd/system/marquee.service
 sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
-sudo systemctl enable dynamic_marquee
-sudo systemctl start dynamic_marquee
+sudo systemctl enable marquee
+sudo systemctl start marquee
+
+echo "[12/12] Checking and configuring console autologin for user: $real_user"
+
+# Path to autologin override
+AUTOLOGIN_DIR="/etc/systemd/system/getty@tty1.service.d"
+AUTOLOGIN_CONF="$AUTOLOGIN_DIR/autologin.conf"
+
+# Check if autologin is already set for the correct user
+if grep -q "agetty --autologin $real_user" "$AUTOLOGIN_CONF" 2>/dev/null; then
+    echo "[Installer] Autologin already configured for $real_user, skipping."
+else
+    echo "[Installer] Enabling autologin for $real_user on tty1..."
+
+    # Ensure directory exists
+    sudo mkdir -p "$AUTOLOGIN_DIR"
+
+    # Write or replace autologin config
+    sudo tee "$AUTOLOGIN_CONF" > /dev/null <<EOF
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin $real_user --noclear %I \$TERM
+EOF
+
+    # Ensure getty is enabled (safe to call even if already enabled)
+    sudo systemctl enable getty@tty1.service
+
+    echo "[Installer] Autologin configured. Reboot required to apply."
+fi
 
 echo "✅ Installation complete! Reboot recommended."
