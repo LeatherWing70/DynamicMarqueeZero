@@ -119,6 +119,8 @@ curl -fsSL "$GITHUB_REPO/retropie.png" -o "$user_home/cache/retropie.png"
 
 
 real_user="${SUDO_USER:-$USER}"
+sudo chown real_user:real_user $user_home/marquee_daemon.py $user_home/cache/retropie.png $user_home/cache $user_home/cache/retropie.png
+
 
 # 9. Inject remote_host into daemon
 echo "[9/12] Configureing daemon..."
@@ -130,15 +132,28 @@ sed -i "s|user = .*|user = \"$real_user\"|" "$user_home/marquee_daemon.py"
 
 # 10. Adjust service file
 echo "[10/12] Configureing daemon service..."
-
-#current_user=$(whoami)
 user_id=$(id -u "$real_user")
 
-# user_home=$(eval echo "~$current_user")
+# Edit in place 
+arch=$(uname -m)
+if [[ "$arch" == "aarch64" ]]; then
+    # 64-bit system: use KMSDRM
+
+    sed -i '/^Environment=SDL_FBDEV=/d' "$user_home/marquee.service"
+    echo "Environment=SDL_VIDEODRIVER=KMSDRM" >> "$user_home/marquee.service"
+else
+    # 32-bit system: use fbcon
+
+    sed -i '/^Environment=SDL_FBDEV=/d' "$user_home/marquee.service"
+    echo "Environment=SDL_VIDEODRIVER=fbcon" >> "$user_home/marquee.service"
+    echo "Environment=SDL_FBDEV=/dev/fb0" >> "$user_home/marquee.service"
+fi
+
+sed -i '/^Environment=SDL_VIDEODRIVER=/d' "$user_home/marquee.service"
 sed -i "s|ExecStart=.*|ExecStart=/usr/bin/python3 $user_home/marquee_daemon.py|" "$user_home/marquee.service"
 sed -i "s|WorkingDirectory=.*|WorkingDirectory=$user_home|" "$user_home/marquee.service"
 sed -i "s|User=.*|User=$real_user|" "$user_home/marquee.service"
-sed -i "s|Environment=XDG_RUNTIME_DIR=.*|Environment=XDG_RUNTIME_DIR=/run/user/$user_id|" "$user_home/marquee.service"
+# sed -i "s|Environment=XDG_RUNTIME_DIR=.*|Environment=XDG_RUNTIME_DIR=/run/user/$user_id|" "$user_home/marquee.service"
 
 # 11. Install systemd service
 echo "[11/12] Installing daemon service..."
