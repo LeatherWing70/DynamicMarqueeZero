@@ -104,6 +104,8 @@ sudo apt install -y python3 python3-pip
 echo "seting up pygame"
 #pip3 install pygame
 sudo apt install -y python3-pygame
+echo "Installing libegl-dev"
+sudo apt install libegl-dev
 # 7. Create cache directory
 echo "[7/12] Creating ~/cache directory..."
 mkdir -p "$user_home/cache"
