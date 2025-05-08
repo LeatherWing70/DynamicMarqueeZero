@@ -47,7 +47,7 @@ fi
 
 # 3. Set locale
 echo "[3/12] [Locale Setup] Generate system locale...  $chosen_locale UTF-8"
-# sudo locale-gen "$chosen_locale"
+sudo locale-gen "$chosen_locale"
 sudo update-locale LANG=$chosen_locale
 
 # 4. SSH key setup
