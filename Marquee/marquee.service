@@ -8,12 +8,12 @@ WorkingDirectory=/home/marquee
 User=marquee
 Restart=always
 RestartSec=5
+Environment=SDL_VIDEODRIVER=KMSDRM
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=SDL_FBDEV=/dev/fb0
 StandardOutput=journal
 StandardError=journal
-
-Environment=SDL_VIDEODRIVER=KMSDRM
-Environment=PYGAME_HIDE_SUPPORT_PROMPT=1
-Environment=XDG_RUNTIME_DIR=/run/user/1000
+# Environment=PYGAME_HIDE_SUPPORT_PROMPT=1
 
 [Install]
 WantedBy=multi-user.target
