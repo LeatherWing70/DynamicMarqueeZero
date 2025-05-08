@@ -119,7 +119,7 @@ curl -fsSL "$GITHUB_REPO/retropie.png" -o "$user_home/cache/retropie.png"
 
 
 real_user="${SUDO_USER:-$USER}"
-sudo chown real_user:real_user $user_home/marquee_daemon.py $user_home/cache/retropie.png $user_home/cache $user_home/cache/retropie.png
+sudo chown $real_user:$real_user $user_home/marquee_daemon.py $user_home/cache/retropie.png $user_home/cache $user_home/cache/retropie.png
 
 
 # 9. Inject remote_host into daemon
