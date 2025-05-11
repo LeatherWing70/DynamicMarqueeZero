@@ -145,9 +145,15 @@ if [[ "$arch" == "aarch64" ]]; then
     sed -i '/^Environment=SDL_FBDEV=/d' "$user_home/marquee.service"
     sed -i "s|Environment=SDL_VIDEODRIVER=.*|Environment=SDL_VIDEODRIVER=KMSDRM|" "$user_home/marquee.service"
     sed -i "s|Environment=PYGAME_HIDE_SUPPORT_PROMPT=.*|Environment=PYGAME_HIDE_SUPPORT_PROMPT=1|" "$user_home/marquee.service"
+    sed -i '/^PAMName=/d' "$user_home/marquee.service"
+    sed -i '/^RuntimeDirectory=/d' "$user_home/marquee.service"
 else
     # 32-bit system: use fbcon
     sed -i "s|Environment=SDL_VIDEODRIVER=.*|Environment=SDL_VIDEODRIVER=fbcon|" "$user_home/marquee.service"
+    sed -i '/^Environment=SDL_VIDEODRIVER=/d' "$user_home/marquee.service"
+    sed -i '/^Environment=XDG_RUNTIME_DIR=/d' "$user_home/marquee.service"
+    sed -i '/^Environment=SDL_FBDEV=/d' "$user_home/marquee.service"
+    
 fi
 
 # 11. Install systemd service
