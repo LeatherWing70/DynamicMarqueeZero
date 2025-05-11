@@ -8,6 +8,8 @@ WorkingDirectory=/home/marquee
 User=marquee
 Restart=always
 RestartSec=5
+PAMName=login
+RuntimeDirectory=marquee
 Environment=SDL_VIDEODRIVER=KMSDRM
 Environment=XDG_RUNTIME_DIR=/run/user/1000
 Environment=SDL_FBDEV=/dev/fb0
