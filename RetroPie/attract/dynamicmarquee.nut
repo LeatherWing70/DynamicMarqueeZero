@@ -40,7 +40,7 @@ function updateTick( ttime )
 	{
 	switch ( fe.game_info(Info.Emulator) )
 		{
-// DYNAMIC_MARQUEE_SWITCH_START
+		// DYNAMIC_MARQUEE_SWITCH_START
 			case "Panasonic 3DO":
 			case "3DO Interactive Multiplayer":
 				marqDir="3do";
@@ -210,10 +210,11 @@ function updateTick( ttime )
 				break;
 			case "TRS-80 Color Computer":
 			case "RetroPie":
+			// DYNAMIC_MARQUEE_SWITCH_END
+			//and default
 			default:
 				marqDir="misc";
 				break;
-// DYNAMIC_MARQUEE_SWITCH_END
 		}
 	
 	//get ext of file
