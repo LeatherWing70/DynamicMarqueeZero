@@ -40,6 +40,7 @@ function updateTick( ttime )
 	{
 	switch ( fe.game_info(Info.Emulator) )
 		{
+// DYNAMIC_MARQUEE_SWITCH_START
 			case "Panasonic 3DO":
 			case "3DO Interactive Multiplayer":
 				marqDir="3do";
@@ -211,7 +212,8 @@ function updateTick( ttime )
 			case "RetroPie":
 			default:
 				marqDir="misc";
-				break;			
+				break;
+// DYNAMIC_MARQUEE_SWITCH_END
 		}
 	
 	//get ext of file
@@ -220,12 +222,12 @@ function updateTick( ttime )
 	
 	// if a file actually exists
 	if (fe.path_test(marqueepath ,PathTest.IsFile)) {
-		fe.plugin_command_bg( "ssh", "pi@marquee.local \"/home/pi/t.sh \\\""+marqDir+"/"+fe.game_info(Info.Name)+ext+"\\\" \\\""+fe.get_art("marquee")+"\\\" "+marqDir+"\"");
+		fe.plugin_command_bg("ssh", "USERNAME@HOSTNAME \"echo \\\"" + marqDir + "/" + fe.game_info(Info.Name) + ext + "\\\" > /home/pi/display.pipe\" &>/dev/null &");
 	}
 	// else do default
 	else
-	{
-		fe.plugin_command( "ssh", "pi@marquee.local \"/home/pi /t.sh retropie.png\"");
+	{	
+		fe.plugin_command("ssh", "USERNAME@HOSTNAME \"echo retropie.png > /home/pi/display.pipe\"");
 	}
 	// reset
 	has_moved = false;
