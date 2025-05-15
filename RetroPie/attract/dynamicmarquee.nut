@@ -223,12 +223,12 @@ function updateTick( ttime )
 	
 	// if a file actually exists
 	if (fe.path_test(marqueepath ,PathTest.IsFile)) {
-		fe.plugin_command_bg("ssh", "USERNAME@HOSTNAME \"echo \\\"" + marqDir + "/" + fe.game_info(Info.Name) + ext + "\\\" > /home/pi/display.pipe\" &>/dev/null &");
+		fe.plugin_command_bg("ssh", "USERNAME@HOSTNAME \"echo \\\"" + marqDir + "/" + fe.game_info(Info.Name) + ext + "\\\" > /tmp/display.pipe\" &>/dev/null &");
 	}
 	// else do default
 	else
 	{	
-		fe.plugin_command("ssh", "USERNAME@HOSTNAME \"echo retropie.png > /home/pi/display.pipe\"");
+		fe.plugin_command("ssh", "USERNAME@HOSTNAME \"echo retropie.png > /tmp/display.pipe\"");
 	}
 	// reset
 	has_moved = false;
