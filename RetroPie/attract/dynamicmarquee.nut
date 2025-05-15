@@ -18,6 +18,9 @@ function dynamicmarquee( ttype, var, transition_time )
 				break;			
 			case Transition.EndLayout:
 			case Transition.ToNewSelection:
+                                load_timer = load_timer_max;
+                                has_moved = true;
+                                break;
 			case Transition.FromOldSelection:
 			case Transition.ToGame:
 			case Transition.FromGame:
@@ -209,7 +212,9 @@ function updateTick( ttime )
 				marqDir="zxspectrum";
 				break;
 			case "TRS-80 Color Computer":
+				break;
 			case "RetroPie":
+				break;
 			// DYNAMIC_MARQUEE_SWITCH_END
 			//and default
 			default:
@@ -223,12 +228,13 @@ function updateTick( ttime )
 	
 	// if a file actually exists
 	if (fe.path_test(marqueepath ,PathTest.IsFile)) {
-		fe.plugin_command_bg("ssh", "USERNAME@HOSTNAME \"echo \\\"" + marqDir + "/" + fe.game_info(Info.Name) + ext + "\\\" > /tmp/display.pipe\" &>/dev/null &");
+		fe.plugin_command_bg("ssh", "USERNAME@HOSTNAME 'echo \"" + marqDir + "/" + fe.game_info(Info.Name) + ext + "::" + fe.get_art("marquee") + "\" > /tmp/display.pipe'");
+
 	}
 	// else do default
 	else
 	{	
-		fe.plugin_command("ssh", "USERNAME@HOSTNAME \"echo retropie.png > /tmp/display.pipe\"");
+		fe.plugin_command_bg("ssh", "USERNAME@HOSTNAME 'echo retropie.png > /tmp/display.pipe'");
 	}
 	// reset
 	has_moved = false;
