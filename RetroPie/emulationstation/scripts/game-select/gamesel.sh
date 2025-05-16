@@ -38,11 +38,11 @@ then
 elif [ -f $DIR/marquee/"$GAME".gif ]
 then
     SOURCE=$DIR/marquee/$GAME.gif
-	CACHE=$1/$GAME.mpg
+	CACHE=$1/$GAME.gif
 else
 	SOURCE=""
 	CACHE="retropie.png"
 	EMU=""
 fi
 
-(sleep .3 && ssh pi@marquee.local "/home/pi/t.sh \""$CACHE"\" \""$SOURCE"\"" $EMU)&
+(sleep .3 && ssh USERNAME@HOSTNAME "echo \""$CACHE"::"$SOURCE"::"$EMU" > /tmp/display.pipe\"")&
