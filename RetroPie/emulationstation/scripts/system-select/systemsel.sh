@@ -17,4 +17,4 @@ else
 	EMU=""
 fi
 	
-(sleep .3 && ssh pi@marquee.local "/home/pi/t.sh \""$CACHE"\" \""$SOURCE"\"" $EMU)&
+(sleep .3 && ssh USERNAME@HOSTNAME "echo \""$CACHE"::"$SOURCE"::"$EMU" > /tmp/display.pipe\"")&
